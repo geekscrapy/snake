@@ -1,0 +1,43 @@
+version: '3'
+
+networks:
+  snakenet:
+  backend:
+
+services:
+
+  # Need to build a config file:
+  # listening IP
+  # IP of redis and mongo
+
+  build:
+    context: ../
+#   dockerfile: Dockerfile
+    image: snake
+    container_name: snake-aio
+    volumes:
+      - ./samples/:~/.snake/db/
+    networks:
+      - snakenet
+      - backend
+    ports:
+      - 5000:5000/tcp
+      - 8000:8000/tcp
+
+  mongodb:
+    image: mongo:latest
+    container_name: snake-mongodb
+    networks:
+      - backend
+    ports:
+      - 27017:27017/tcp
+
+  redis:
+    image: redis
+    container_name: snake-redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - backend
+    ports:
+      - 6379:6379/tcp
